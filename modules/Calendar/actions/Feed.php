@@ -285,6 +285,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		require('user_privileges/sharing_privileges_'.$currentUser->id.'.php');
 
 		$moduleModel = Vtiger_Module_Model::getInstance('Events');
+		$holidayresult =  Settings_HolidayManager_Module_Model::loadAll();
 		// if($userid && !$isGroupId){
 		// 	$focus = new Users();
 		// 	$focus->id = $userid;
@@ -417,6 +418,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 			$result[] = $item;
 		}
+		$result = array_merge($result,$holidayresult);
 	}
 
 	protected function pullMultipleEvents($start, $end, &$result, $data) {
