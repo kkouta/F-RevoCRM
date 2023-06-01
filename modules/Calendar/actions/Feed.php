@@ -15,6 +15,8 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 	private $cacheParent = array();
 
 	public function process(Vtiger_Request $request) {
+		
+		// $holidayresult =  Settings_HolidayManager_Module_Model::loadAll();
 		if($request->get('mode') === 'batch') {
 			$feedsRequest = $request->get('feedsRequest',array());
 			$result = array();
@@ -32,9 +34,16 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 					$requestParams['group'] = $value['group'];
 					$requestParams['mapping'] = $value['mapping'];
 					$requestParams['conditions'] = $value['conditions'];
+					
+					if($value['type'] =='Holiday'){
+						echo 'FDSafaf';
+					}
 					$result[$key] = $this->_process($requestParams);
 				}
 			}
+			
+			// $result = array_merge($result,$holidayresult);
+			// file_put_contents("sampleresult.txt",json_encode($result, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
 			echo json_encode($result);
 		} else {
 			$requestParams = array();
@@ -83,6 +92,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 				case 'MultipleEvents'	:	$this->pullMultipleEvents($start,$end, $result,$mapping);break;
 				case $type				:	$this->pullDetails($start, $end, $result, $type, $fieldName, $color, $textColor);break;
 			}
+			// file_put_contents("sampleresult2.txt",json_encode($result, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
 			return json_encode($result);
 		} catch (Exception $ex) {
 			return $ex->getMessage();
@@ -96,11 +106,12 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 	protected function pullDetails($start, $end, &$result, $type, $fieldName, $color = null, $textColor = 'white', $conditions = '') {
 		$moduleModel = Vtiger_Module_Model::getInstance($type);
 		$nameFields = $moduleModel->getNameFields();
+		
 		foreach($nameFields as $i => $nameField) {
 			$fieldInstance = $moduleModel->getField($nameField);
 			if(!$fieldInstance->isViewable()) {
 				unset($nameFields[$i]);
-			}
+			} 
 		}
 		$nameFields = array_values($nameFields);
 		$selectFields = implode(',', $nameFields);		
@@ -229,6 +240,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
                         }
                         $result[] = $item;
 		}
+		
 	}
 
 	protected function generateCalendarViewConditionQuery($conditions) {

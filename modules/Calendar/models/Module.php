@@ -462,10 +462,15 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 		for($i=0; $i<$rows; $i++){
 			$activityTypes = $db->query_result_rowdata($result, $i);
 			$moduleInstance = Vtiger_Module_Model::getInstance($activityTypes['module']);
+			if($activityTypes['module'] == 'holiday'){
+				echo 'Fsdafaf';
+			}
 			//If there is no module view permission, should not show in calendar view
+			// if($activityTypes['module'] != 'holiday'){
 			if($moduleInstance === false || !$moduleInstance->isPermitted('Detail')) {
 				continue;
 			}
+		// }
 			$type = '';
 			if(in_array($activityTypes['module'], array('Events','Calendar')) && $activityTypes['isdefault']) {
 				$type = $activityTypes['module'].'_'.$activityTypes['isdefault'];
@@ -490,6 +495,21 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 				$conditions = Zend_Json::decode($conditions);
 				$conditionsName = $conditions['value'];
 			}
+			if($activityTypes['module'] == 'holiday'){
+				$fieldInfo = array(	'module'	=> $activityTypes['module'],
+								'fieldname' => 'holidaydate',
+								'fieldlabel'=> 'HolidayDate',
+								'visible'	=> '1',
+								'color'		=> $activityTypes['color'],
+								'type'		=> $type,
+								'conditions'=> array(
+												'name' => $conditionsName,
+												'rules' => $activityTypes['conditions']
+												)
+			);
+			$calendarViewTypes['visible'][] = $fieldInfo;
+			}else{
+				
 			$fieldInfo = array(	'module'	=> $activityTypes['module'],
 								'fieldname' => implode(',', array_keys($fieldLabelsList)),
 								'fieldlabel'=> implode(',', $fieldLabelsList),
@@ -501,6 +521,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 												'rules' => $activityTypes['conditions']
 												)
 			);
+			}
 
 			if($activityTypes['visible'] == '1') {
 				if ($fieldLabelsList) {
@@ -549,6 +570,19 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 			}
 		}
 
+		// $holidayarray = [
+		// 	"Holiday" => [
+		// 		'date'=>'祝日'
+		// 	]];
+		$holidayarray = array();
+		$holidayarray["holiday"] =array("holidaydate"=>"祝日");
+		$moduleFieldsList = array_merge($moduleFieldsList,$holidayarray);//ここでカレンダー種別に項目を追加している。祝日をカレンダー種別のデフォルトに登録する
+		file_put_contents("samplemoduleFieldsList.txt",json_encode($moduleFieldsList, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
+		file_put_contents("sampleholidayarray.txt",json_encode($holidayarray, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
+		
+		
+
+
 		$eventFieldsList = array('date_start','due_date');
 		$eventFieldLabelsList = array();
 		$moduleInstance = Vtiger_Module_Model::getInstance('Events');
@@ -587,6 +621,8 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 				if(count($fieldsListArray) == 1) {
 					if($list['module'] !== 'Events') {
 						unset($fieldsListArray[$list['fieldname']]);
+					}else{
+						echo 'Fdsafa';
 					}
 				}
 				if(!empty($fieldsListArray)) {

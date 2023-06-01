@@ -23,7 +23,7 @@ class Settings_HolidayManager_SaveAjax_Action extends Settings_Vtiger_Basic_Acti
             $recordModel = Settings_HolidayManager_Record_Model::getInstanceById($record);
         }
         
-        $fieldList = array('holidayname','date','holidaystatus',);
+        $fieldList = array('holidayname','holidaydate','holidaystatus',);
         
         foreach ($fieldList as $fieldName) {
             if($request->has($fieldName)) {

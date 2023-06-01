@@ -13,6 +13,7 @@ $languageStrings = array(
     'LBL_HOLIDAYDATE' => '日付',
     'LBL_ADD_NEW_HOLIDAY' => '祝日の追加',
     'LBL_EDIT_HOLIDAY' => '祝日の編集',
+    'LBL_HOLIDAY_INFORMATION' => '基本情報',
     'HolidayName' => '祝日名',
     'HolidayDate' => '日付',
     'HolidayStatus' => 'ステータス',

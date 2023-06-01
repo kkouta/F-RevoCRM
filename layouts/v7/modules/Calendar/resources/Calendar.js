@@ -285,7 +285,18 @@ Vtiger.Class("Calendar_Calendar_Js", {
 						var feedCheckbox = jQuery(this);
 						var feedRequestParams = thisInstance.getFeedRequestParams(start, end, feedCheckbox);
 						activeFeedsRequestParams[feedCheckbox.data('calendarSourcekey')] = feedRequestParams;
+						// console.log(feedRequestParams);
+						// console.log(activeFeedsRequestParams);
 					});
+					activeFeedsRequestParams['Holiday_holidaydate'] = {
+						"start": "2023-05-01",
+						"end": "2023-06-05",
+						"type": "Holiday",
+						"fieldname": "holidaydate",
+						"color": "#f07dc8",
+						"textColor": "black",
+						"conditions": ""
+					};
 
 					var requestParams = {
 						'module': app.getModuleName(),
@@ -293,6 +304,7 @@ Vtiger.Class("Calendar_Calendar_Js", {
 						'mode': 'batch',
 						'feedsRequest': activeFeedsRequestParams
 					};
+					console.log(requestParams);
 					var events = [];
 					app.helper.showProgress();
 					activeFeeds.attr('disabled', 'disabled');
@@ -1540,7 +1552,7 @@ Vtiger.Class("Calendar_Calendar_Js", {
 
 			popOverHTML += '</span>';
 
-			if (sourceModule === 'Calendar' || sourceModule == 'Events'||sourceModule =="ProjectTask") {
+			if (sourceModule === 'Calendar' || sourceModule == 'Events'||sourceModule =="ProjectTask"||sourceModule == 'Holiday') {
 				popOverHTML += '' +
 						'<span class="pull-right cursorPointer" ' +
 						'onClick="Calendar_Calendar_Js.deleteCalendarEvent(\'' + eventObj.id +
