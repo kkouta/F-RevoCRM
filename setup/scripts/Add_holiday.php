@@ -9,12 +9,23 @@ include_once('include/utils/CommonUtils.php');
 global $adb;
 
 $module_name = "HolidayManager";
+$table_name = 'vtiger_holiday';
 $query = "SELECT * FROM vtiger_settings_field WHERE name = ?";
 $result = $adb->pquery($query, array($module_name));
 
 //Add link to the module in the Setting Panel
 $fieldid = $adb->getUniqueID('vtiger_settings_field');
 $blockid = getSettingsBlockId('LBL_MODULE_MANAGER');
+
+$adb->query("CREATE TABLE vtiger_holiday (
+    id int(19) NOT NULL AUTO_INCREMENT,
+    holidayname varchar(100) NOT NULL,
+    date DATE NOT NULL,
+    holidaystatus varchar(100),
+    PRIMARY KEY (id)
+    ) AUTO_INCREMENT=1 DEFAULT CHARSET=utf8");
+
+
 
 if($adb->num_rows($result) == 0){
     $seq_res = $adb->query("SELECT max(sequence) AS max_seq FROM vtiger_settings_field WHERE blockid=$blockid");

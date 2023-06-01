@@ -38,6 +38,12 @@
                                 <input type="text"  class="dateField form-control  inputElement" name="date" value="{$RECORD_MODEL->get('date')}" data-rule-required = "true" />
                             </div>	
                         </div>
+                        <div class="form-group">
+                            <label class="control-label fieldLabel col-sm-5">{vtranslate('LBL_HOLIDAYSTATUS', $QUALIFIED_MODULE)}&nbsp;<span class="redColor">*</span></label>
+                            <div class="controls fieldValue col-xs-6">
+                                <input type="text"  class="inputElement" name="holidaystatus" value="{$RECORD_MODEL->get('date')}" data-rule-required = "true" />
+                            </div>	
+                        </div>
                 </div>
             </div>
             {include file='ModalFooter.tpl'|@vtemplate_path:'Vtiger'}

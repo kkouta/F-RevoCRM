@@ -80,6 +80,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 												$this->pullDetails($start, $end, $result, $type, $fieldName, $color, $textColor);
 											}
 											break;
+				case 'Holiday'   		:	$this->pullHoliday($start, $end, $result);
 				case 'MultipleEvents'	:	$this->pullMultipleEvents($start,$end, $result,$mapping);break;
 				case $type				:	$this->pullDetails($start, $end, $result, $type, $fieldName, $color, $textColor);break;
 			}
@@ -285,7 +286,6 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		require('user_privileges/sharing_privileges_'.$currentUser->id.'.php');
 
 		$moduleModel = Vtiger_Module_Model::getInstance('Events');
-		$holidayresult =  Settings_HolidayManager_Module_Model::loadAll();
 		// if($userid && !$isGroupId){
 		// 	$focus = new Users();
 		// 	$focus->id = $userid;
@@ -418,7 +418,6 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 			$result[] = $item;
 		}
-		$result = array_merge($result,$holidayresult);
 	}
 
 	protected function pullMultipleEvents($start, $end, &$result, $data) {
@@ -487,6 +486,18 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 			$result[] = $item;
 		}
+	}
+	protected function pullHoliday($start, $end, &$result) {
+		include_once('Settings/HolidayManager/models/Module.php');
+		$moduleModel = Settings_HolidayManager_Module_Model::pullEvent($start,$end);
+		if($moduleModel != null){
+			$result = $moduleModel;
+		}else{
+			return;
+		}
+		
+
+
 	}
 
 }

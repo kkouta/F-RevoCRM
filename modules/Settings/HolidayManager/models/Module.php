@@ -21,36 +21,18 @@ class Settings_HolidayManager_Module_Model extends Settings_LanguageConverter_Mo
         return array('holidayname', 'date', 'holidaystatus');
     }
 
-    private static function createTable() {
-        global $adb;
-
-        if(Vtiger_Utils::CheckTable(self::$TABLE_NAME)) {
-            return ;
-        }
-
-        $table = self::$TABLE_NAME;
-        $adb->query("CREATE TABLE ${table} (
-            `id` int(19) NOT NULL AUTO_INCREMENT,
-            `holidayname` varchar(100) NOT NULL,
-            `date` DATE NOT NULL,
-            `holidaystatus` varchar(100),
-            PRIMARY KEY (`id`)
-           ) AUTO_INCREMENT=1 DEFAULT CHARSET=utf8");
-    }
-
-    public static function loadAll() {
-        global $adb;
-        $table = self::$TABLE_NAME;
-
-        // Setup Wizard
-        if(!file_exists('config.inc.php')) {
+        public static function pullEvent($start,$end){
+        if(!Vtiger_Utils::CheckTable(self::$TABLE_NAME)){
+            file_put_contents("sampleckeck.txt",json_encode(Vtiger_Utils::CheckTable(self::$TABLE_NAME), JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
             return;
         }
+        if(!Settings_HolidayManager_Record_Model::checkholidayfromapi()){
+            return;
+        }
+        global $adb;
+        $table = self::$TABLE_NAME;
 
-        self::createTable();
-
-        $result = $adb->query("SELECT id, holidayname, date, holidaystatus FROM $table");
-
+        $result = $adb->query("SELECT id,holidayname,date,holidaystatus FROM $table WHERE date>='$start' AND date<='$end'");
         for($i=0; $i<$adb->num_rows($result); $i++) {
             $id = $adb->query_result($result, $i, 'id');
             $holidayname = $adb->query_result($result, $i, 'holidayname');
@@ -62,9 +44,11 @@ class Settings_HolidayManager_Module_Model extends Settings_LanguageConverter_Mo
                 'title' => $holidayname,
                 'start' => $holidaydate,
                 'status' => $holidaystatus,
+                'module' => 'HolidayManager'
             );
         }
         return $item;
+
 
     }
     public function getCreateRecordUrl() {

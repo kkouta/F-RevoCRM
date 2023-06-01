@@ -94,4 +94,50 @@ class Settings_HolidayManager_Record_Model extends Settings_LanguageConverter_Re
         $deleteLinkInstance = Vtiger_Link_Model::getInstanceFromValues($deleteLink);
         return array($editLinkInstance,$deleteLinkInstance);
     }
+    public function checkholidayfromapi(){
+        $thisyear = date('Y');
+        
+        global $adb;
+        if(!Vtiger_Utils::CheckTable('vtiger_holiday_api')){
+            return;
+        }
+        $result = $adb->pquery("SELECT  exist FROM vtiger_holiday_api WHERE year = ?", array($thisyear));
+        
+        if($result == 1){
+            return true;
+        }else{
+            file_put_contents("sampleresultexist.txt",json_encode($result, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
+            $this->getholidayfromapi($thisyear);
+        }
+
+
+        
+
+        
+    }
+    public function getholidayfromapi($year){
+        $db = PearDatabase::getInstance();
+        $apiurl = 'https://holidays-jp.github.io/api/v1/'. $year .'/date.json';
+        file_put_contents("sampleurl.txt",json_encode($apiurl, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
+
+        $jsonholiday = mb_convert_encoding(file_get_contents($apiurl), 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN');
+        foreach($jsonholiday as $key => $value){
+            $key = DateTimeField::convertToDBTimeZone($key);
+            $key = $key->format('Y-m-d H:i:s');
+            $query = "INSERT INTO vtiger_holiday (date, holidayname) VALUES(?,?)";
+            $db->pquery($query,array($key,$value));
+        }
+        $db->pquery("INSERT INTO vtiger_holiday_api (exist, year) VALUES(?,?)",array(1,$year));
+    }
+    public function createholidayapitable(){
+        $db = PearDatabase::getInstance();
+        $db->query("CREATE TABLE vtiger_holiday_api (
+            id int(19) NOT NULL AUTO_INCREMENT,
+            exist int(10) NOT NULL,
+            year int(100) NOT NULL,
+            PRIMARY KEY (id)
+            ) AUTO_INCREMENT=1 DEFAULT CHARSET=utf8");
+
+
+    }
 }
