@@ -9,8 +9,41 @@ include_once('include/utils/CommonUtils.php');
 global $adb;
 
 $module_name = "HolidayManager";
+$table_name = 'vtiger_holiday';
 $query = "SELECT * FROM vtiger_settings_field WHERE name = ?";
 $result = $adb->pquery($query, array($module_name));
+$main_id =  'id';
+
+$module = new Vtiger_Module();
+$module->name = $module_name;
+$module->save();
+$module->initTables($table_name, $main_id);
+$tabid = $module->id;
+
+/* 基本情報 */
+$blockInstance = new Vtiger_Block();
+$blockInstance->label = 'LBL_HOLIDAY_INFORMATION';
+$module->addBlock($blockInstance);
+
+// 件名
+$field = new Vtiger_Field();
+$field->name = 'holiday';
+$field->table = $module->basetable;
+$field->column = $field->name;
+$field->columntype = 'varchar(100)';
+$field->uitype = 2;
+$field->typeofdata = 'V~M';
+$field->masseditable = 1;
+$field->quickcreate = 1;
+$field->summaryfield = 1;
+$field->label = '祝日';
+$blockInstance->addField($field);
+
+/*
+* モジュール内でキーとなるカラム1つに対して実行
+* 複数回は実施しないこと
+*/
+$module->setEntityIdentifier($field);
 
 //Add link to the module in the Setting Panel
 $fieldid = $adb->getUniqueID('vtiger_settings_field');
@@ -46,4 +79,3 @@ if($adb->num_rows($result) == 0){
     );
 
 }
-

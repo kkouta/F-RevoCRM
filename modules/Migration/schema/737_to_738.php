@@ -8,6 +8,7 @@
 * All Rights Reserved.
 *********************************************************************************/
 
+
 if (defined('VTIGER_UPGRADE')) {
 	global $current_user, $adb;
 	$db = PearDatabase::getInstance();

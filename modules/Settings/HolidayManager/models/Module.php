@@ -56,12 +56,14 @@ class Settings_HolidayManager_Module_Model extends Settings_LanguageConverter_Mo
             $holidayname = $adb->query_result($result, $i, 'holidayname');
             $holidaydate = $adb->query_result($result, $i, 'date');
             $holidaystatus = $adb->query_result($result, $i, 'holidaystatus');
+            $visibility = $adb->query_result($result, $i, 'visibility');
 
             $item[] = array(
                 'id' => $id,
                 'title' => $holidayname,
                 'start' => $holidaydate,
                 'status' => $holidaystatus,
+                'visibility' => $visibility,
             );
         }
         return $item;

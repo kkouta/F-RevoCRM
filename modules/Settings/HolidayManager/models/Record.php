@@ -78,7 +78,7 @@ class Settings_HolidayManager_Record_Model extends Settings_LanguageConverter_Re
         return 'module=HolidayManager&parent=Settings&view=EditAjax&record='.$this->getId();
     }
     
-    public function getRecordLinks() {
+    public function getRecordLinks() {//これもいらない
         $editLink = array(
             'linkurl' => "javascript:Settings_HolidayManager_Js.triggerEdit(event, '".$this->getId()."')",
             'linklabel' => 'LBL_EDIT',
@@ -94,4 +94,78 @@ class Settings_HolidayManager_Record_Model extends Settings_LanguageConverter_Re
         $deleteLinkInstance = Vtiger_Link_Model::getInstanceFromValues($deleteLink);
         return array($editLinkInstance,$deleteLinkInstance);
     }
+
+    public function checkholidaydbexist() {
+
+        $db = PearDatabase::getInstance();
+
+        $query = "SHOW TABLES LIKE 'vtiger_holiday';";
+        $result = $db->pquery($query);
+    
+        if(!empty($db->fetchByAssoc($result))){
+            file_put_contents("sample.txt",json_encode('tableが存在しました', JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
+
+            return $this->pullholidays();
+        }
+        else{
+            //holidayのテーブルがない場合にテーブルを作成する。
+            $query = "CREATE TABLE vtiger_holiday(holidayid INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100) NOT NULL , date DATE,holidaystatus VARCHAR(100))";
+            $db->pquery($query);
+            $this->insertholiday();
+            file_put_contents("sample.txt",json_encode('tableが存在しません', JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
+            return;
+        }
+        return $result;
+    }
+
+    public function pullholidays(){
+        $db = PearDatabase::getInstance();
+        $query = "SELECT * FROM vtiger_holiday";
+        $fsadfa = $db->pquery($query);
+        while($record = $db->fetchByAssoc($db->pquery($query))){
+            $item = array();
+            $item['id'] = $record['holidayid'];
+            $item['status'] = $record['holidaystatus'];
+            $item['start'] = $record['date'];
+            $item['title'] = $record['name'];
+            $result[] = $item;
+
+        }
+
+        return $result;
+
+    }
+
+    public function createholidaydb(){
+            $query = "CREATE TABLE vtiger_holiday(holidayid INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100) NOT NULL)";
+
+            $holiday = $this->getholidayfromapi();
+
+            
+
+        }
+
+    public function getholidayfromapi(){
+        $apiurl = 'https://holidays-jp.github.io/api/v1/2023/date.json';
+        $jsonholiday = mb_convert_encoding(file_get_contents($apiurl), 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN');
+        
+        // file_put_contents("sampleholidayapi.txt",json_encode($arrayaaa["2023-01-01"], JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
+        return $jsonholiday;//うまく連想配列に入るように修正する。
+    }
+    
+    public function insertholiday(){ 
+        $db = PearDatabase::getInstance();
+        $jsonholiday =  $this->getholidayfromapi();
+       
+
+        foreach($jsonholiday as $key => $value){
+            $key = DateTimeField::convertToDBTimeZone($key);
+            $key = $key->format('Y-m-d H:i:s');
+            $query = "INSERT INTO vtiger_holiday (date, name) VALUES(?,?)";
+            $db->pquery($query,array($key,$value));
+        }
+        return;
+
+    }
+
 }
