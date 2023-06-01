@@ -286,6 +286,16 @@ Vtiger.Class("Calendar_Calendar_Js", {
 						var feedRequestParams = thisInstance.getFeedRequestParams(start, end, feedCheckbox);
 						activeFeedsRequestParams[feedCheckbox.data('calendarSourcekey')] = feedRequestParams;
 					});
+					activeFeedsRequestParams['HolidayManager'] = {
+						"start": "2023-05-01",
+						"end": "2023-06-05",
+						"type": "Holiday",
+						"fieldname": "holidaydate",
+						"color": "#f07dc8",
+						"textColor": "black",
+						"conditions": ""
+					};
+					console.log(activeFeedsRequestParams);
 
 					var requestParams = {
 						'module': app.getModuleName(),

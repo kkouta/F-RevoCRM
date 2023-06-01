@@ -21,21 +21,28 @@ class Settings_HolidayManager_Module_Model extends Settings_LanguageConverter_Mo
         return array('holidayname', 'date', 'holidaystatus');
     }
 
-    private static function createTable() {
+    public static function pullEvent($start,$end){
+        
         global $adb;
-
-        if(Vtiger_Utils::CheckTable(self::$TABLE_NAME)) {
-            return ;
-        }
-
         $table = self::$TABLE_NAME;
-        $adb->query("CREATE TABLE ${table} (
-            `id` int(19) NOT NULL AUTO_INCREMENT,
-            `holidayname` varchar(100) NOT NULL,
-            `date` DATE NOT NULL,
-            `holidaystatus` varchar(100),
-            PRIMARY KEY (`id`)
-           ) AUTO_INCREMENT=1 DEFAULT CHARSET=utf8");
+
+        $result = $adb->query("SELECT id,holidayname,date,holidaystatus FROM $table WHERE date>='$start' AND date<='$end'");
+        for($i=0; $i<$adb->num_rows($result); $i++) {
+            $id = $adb->query_result($result, $i, 'id');
+            $holidayname = $adb->query_result($result, $i, 'holidayname');
+            $holidaydate = $adb->query_result($result, $i, 'date');
+            $holidaystatus = $adb->query_result($result, $i, 'holidaystatus');
+
+            $item[] = array(
+                'id' => $id,
+                'title' => $holidayname,
+                'start' => $holidaydate,
+                'status' => $holidaystatus,
+            );
+        }
+        return $item;
+
+
     }
 
     public static function loadAll() {
@@ -47,7 +54,6 @@ class Settings_HolidayManager_Module_Model extends Settings_LanguageConverter_Mo
             return;
         }
 
-        self::createTable();
 
         $result = $adb->query("SELECT id, holidayname, date, holidaystatus FROM $table");
 

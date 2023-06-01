@@ -17,6 +17,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 	public function process(Vtiger_Request $request) {
 		if($request->get('mode') === 'batch') {
 			$feedsRequest = $request->get('feedsRequest',array());
+			file_put_contents("samplefeedsRequest.txt",json_encode($feedsRequest, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
 			$result = array();
 			if(count($feedsRequest)) {
 				foreach($feedsRequest as $key=>$value) {
@@ -80,6 +81,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 												$this->pullDetails($start, $end, $result, $type, $fieldName, $color, $textColor);
 											}
 											break;
+				case 'Holiday'   		:	$this->pullHoliday($start, $end, $result,$color,$textColor);
 				case 'MultipleEvents'	:	$this->pullMultipleEvents($start,$end, $result,$mapping);break;
 				case $type				:	$this->pullDetails($start, $end, $result, $type, $fieldName, $color, $textColor);break;
 			}
@@ -229,6 +231,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
                         }
                         $result[] = $item;
 		}
+		file_put_contents("samplepulltask.txt",json_encode($result[1], JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
 	}
 
 	protected function generateCalendarViewConditionQuery($conditions) {
@@ -417,6 +420,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$item['description'] = $record['description'];
 
 			$result[] = $item;
+			file_put_contents("sampleresult.txt",json_encode($result, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
 		}
 		$result = array_merge($result,$holidayresult);
 	}
@@ -486,7 +490,17 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$item['description'] = $record['description'];
 
 			$result[] = $item;
+			file_put_contents("samplepulltask.txt",json_encode($result, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
 		}
+	}
+	protected function pullHoliday($start, $end,$result) {
+		// return;
+		include_once('Settings/HolidayManager/models/Module.php');
+		$moduleModel = Settings_HolidayManager_Module_Model::pullEvent($start,$end);
+		$result = $moduleModel;
+		file_put_contents("sampleresult2.txt",json_encode($result, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),FILE_APPEND );
+
+
 	}
 
 }
