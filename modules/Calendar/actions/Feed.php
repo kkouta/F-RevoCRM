@@ -80,6 +80,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 												$this->pullDetails($start, $end, $result, $type, $fieldName, $color, $textColor);
 											}
 											break;
+				case 'HolidayManager'   :	$this->pullHoliday($start, $end, $result,$color,$textColor);
 				case 'MultipleEvents'	:	$this->pullMultipleEvents($start,$end, $result,$mapping);break;
 				case $type				:	$this->pullDetails($start, $end, $result, $type, $fieldName, $color, $textColor);break;
 			}
@@ -487,6 +488,12 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 			$result[] = $item;
 		}
+	}
+	protected function pullHoliday($start, $end, $result,$color,$textColor) {
+		include_once('Settings/LanguageConverter/models/Module.php');
+		$moduleModel = Settings_HolidayManager_Module_Model:loada
+
+
 	}
 
 }
