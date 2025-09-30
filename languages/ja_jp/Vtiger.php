@@ -362,6 +362,9 @@ $languageStrings = array(
 
 	//Dashboard String
 	'LBL_ADD_WIDGET' => 'ウィジェットの追加',
+	'LBL_IFRAME_WIDGET' => 'IFrameウィジェット',
+	'LBL_ADD_IFRAME_WIDGET' => 'IFrameウィジェットの登録',
+	'LBL_IFRAME_NAME' => 'サイト名',
 	'LBL_COMMENTS' => 'コメント',
 	'LBL_REFRESH' => '更新',
 	'LBL_CLOSE' => '閉じる',

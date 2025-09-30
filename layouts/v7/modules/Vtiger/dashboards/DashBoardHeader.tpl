@@ -51,7 +51,7 @@
 						<li>
 							<a onclick="Vtiger_DashBoard_Js.addIFrameWidget(this, '{$IFRAMEWIDGET->getUrl()}')" href="javascript:void(0);"
 								data-linkid="{$IFRAMEWIDGET->get('linkid')}" data-name="{$IFRAMEWIDGET->getName()}" data-width="{$IFRAMEWIDGET->getWidth()}" data-height="{$IFRAMEWIDGET->getHeight()}">
-								IFrame Widget</a>
+								{vtranslate('LBL_IFRAME_WIDGET', $MODULE_NAME)}</a>
 						</li>
 					{/if}
 

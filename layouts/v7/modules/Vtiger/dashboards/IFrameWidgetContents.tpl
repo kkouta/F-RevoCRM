@@ -24,8 +24,8 @@
                      <input type="text" class="form-control" id="iframeUrl_{$WIDGETID}" value="{$WIDGET_URL}" placeholder="https://example.com or /index.php?module=Calendar">
                  </div>
                  <div class="form-group">
-                     <button type="button" class="btn btn-success" onclick="Vtiger_IFrameWidget_Widget_Js.prototype.saveIFrameWidget('{$WIDGETID}');">Save</button>
-                     <button type="button" class="btn btn-default" onclick="Vtiger_IFrameWidget_Widget_Js.prototype.cancelEdit('{$WIDGETID}');">Cancel</button>
+                     <button type="button" class="btn btn-success" onclick="Vtiger_IFrameWidget_Widget_Js.prototype.saveIFrameWidget('{$WIDGETID}');">{vtranslate('LBL_SAVE', $MODULE_NAME)}</button>
+                     <button type="button" class="btn btn-default" onclick="Vtiger_IFrameWidget_Widget_Js.prototype.cancelEdit('{$WIDGETID}');">{vtranslate('LBL_CANCEL', $MODULE_NAME)}</button>
                  </div>
              </div>
              
@@ -45,7 +45,7 @@
                  {else}
                      <div class="text-center text-muted" style="padding:50px; height: 100%; display: flex; flex-direction: column; justify-content: center;">
                          <i class="fa fa-external-link" style="font-size:48px;"></i>
-                         <h4>IFrame Widget</h4>
+                         <h4>{vtranslate('LBL_IFRAME_WIDGET', $MODULE_NAME)}</h4>
                          <p>Click the settings icon to configure this widget.</p>
                      </div>
                  {/if}

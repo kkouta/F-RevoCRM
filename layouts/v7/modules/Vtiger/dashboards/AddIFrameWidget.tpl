@@ -10,15 +10,15 @@
  {strip}
 	<div id="addIFrameWidgetContainer" class='modal-dialog'>
         <div class="modal-content">
-            {assign var=HEADER_TITLE value="Add IFrame Widget"}
+            {assign var=HEADER_TITLE value={vtranslate('LBL_ADD_IFRAME_WIDGET', $MODULE)}}
             {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
             <form class="form-horizontal addIFrameWidgetForm" method="POST">
                 <div class="row" style="padding:10px;">
                     <label class="fieldLabel col-lg-4">
-                        <label class="pull-right">Widget Title<span class="redColor">*</span></label>
+                        <label class="pull-right">{vtranslate('LBL_IFRAME_NAME', $MODULE)}<span class="redColor">*</span></label>
                     </label>
                     <div class="fieldValue col-lg-6">
-                        <input type="text" name="iframeWidgetTitle" class="inputElement" data-rule-required="true" placeholder="Enter widget title" />
+                        <input type="text" name="iframeWidgetTitle" class="inputElement" data-rule-required="true" placeholder="" />
                     </div>
                 </div>
                 <div class="row" style="padding:10px;">
@@ -26,7 +26,7 @@
                         <label class="pull-right">URL<span class="redColor">*</span></label>
                     </label>
                     <div class="fieldValue col-lg-6">
-                        <input type="text" name="iframeWidgetUrl" class="inputElement" data-rule-required="true" placeholder="https://example.com or /index.php?module=Calendar" />
+                        <input type="text" name="iframeWidgetUrl" class="inputElement" data-rule-required="true" placeholder="" />
                     </div>
                 </div>
                 
